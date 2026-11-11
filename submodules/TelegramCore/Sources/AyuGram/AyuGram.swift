@@ -60,6 +60,24 @@ public final class AyuSettings {
         set { self.set("ayu.ghostOnline", newValue) }
     }
 
+    /// Show the numeric id in a user's profile.
+    public var showPeerId: Bool {
+        get { return self.value("ayu.showPeerId", true) }
+        set { self.set("ayu.showPeerId", newValue) }
+    }
+
+    /// Never fetch sponsored (ad) messages.
+    public var hideAds: Bool {
+        get { return self.value("ayu.hideAds", true) }
+        set { self.set("ayu.hideAds", newValue) }
+    }
+
+    /// Show seconds in the time next to every message.
+    public var showSeconds: Bool {
+        get { return self.value("ayu.showSeconds", false) }
+        set { self.set("ayu.showSeconds", newValue) }
+    }
+
     /// Never send "story viewed".
     public var ghostStories: Bool {
         get { return self.value("ayu.ghostStories", false) }

@@ -177,6 +177,14 @@ func infoItems(
             ))
         }
         
+        if AyuSettings.shared.showPeerId {
+            let ayuPeerIdText = String(user.id.id._internalGetInt64Value())
+            items[currentPeerInfoSection]!.append(PeerInfoScreenLabeledValueItem(id: 3999, label: "ID", text: ayuPeerIdText, textColor: .primary, action: { _, _ in
+                UIPasteboard.general.string = ayuPeerIdText
+            }, longTapAction: nil, contextAction: nil, requestLayout: { animated in
+                interaction.requestLayout(animated)
+            }))
+        }
         if let phone = user.phone {
             let formattedPhone = formatPhoneNumber(context: context, number: phone)
             let label: String
