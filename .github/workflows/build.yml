@@ -55,6 +55,7 @@ jobs:
           assert re.fullmatch(r"[0-9a-f]{32}", api_hash), "bad api_hash, length %d" % len(api_hash)
           c["api_id"] = "36059564"
           c["api_hash"] = api_hash
+          c["enable_icloud"] = False  # no iCloud entitlement when sideloaded with a free Apple ID (CloudKit would trap)
           json.dump(c, open("build-system/my-configuration.json", "w"), indent=1)
           PY
 
