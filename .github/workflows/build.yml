@@ -70,9 +70,12 @@ jobs:
             --buildNumber="$BUILD_NUMBER"
 
           mkdir -p build/artifacts
-          for f in bazel-out/applebin_ios-ios_arm*-opt-ST-*/bin/Telegram/Telegram.ipa; do
-            cp "$f" build/artifacts/
-          done
+          IPA=$(find -L bazel-bin/Telegram -maxdepth 1 -name 'Telegram.ipa' 2>/dev/null | head -1)
+          if [ -z "$IPA" ]; then
+            IPA=$(find /private/var/tmp/_bazel_containerhost -name 'Telegram.ipa' -not -path '*/external/*' 2>/dev/null | head -1)
+          fi
+          echo "IPA path: $IPA"
+          cp "$IPA" build/artifacts/Telegram.ipa
           ls -la build/artifacts
 
       - name: Save build cache
