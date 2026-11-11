@@ -8,6 +8,11 @@ public final class AyuSettings {
 
     private let defaults = UserDefaults.standard
 
+    /// Sideloaded builds (free Apple ID) have no Siri / iCloud entitlements; touching those APIs aborts the process.
+    public var siriUnavailable: Bool {
+        return true
+    }
+
     private func value(_ key: String, _ defaultValue: Bool) -> Bool {
         if self.defaults.object(forKey: key) == nil {
             return defaultValue

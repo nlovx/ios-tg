@@ -963,7 +963,9 @@ private func extractAccountManagerState(records: AccountRecordsView<TelegramAcco
                 }
             })
         }, requestSiriAuthorization: { completion in
-            if #available(iOS 10, *) {
+            if AyuSettings.shared.siriUnavailable {
+                completion(false)
+            } else if #available(iOS 10, *) {
                 INPreferences.requestSiriAuthorization { status in
                     if case .authorized = status {
                         completion(true)
@@ -975,7 +977,7 @@ private func extractAccountManagerState(records: AccountRecordsView<TelegramAcco
                 completion(false)
             }
         }, siriAuthorization: {
-            if buildConfig.isSiriEnabled {
+            if buildConfig.isSiriEnabled && !AyuSettings.shared.siriUnavailable {
                 if #available(iOS 10, *) {
                     switch INPreferences.siriAuthorizationStatus() {
                     case .authorized:
@@ -3401,7 +3403,7 @@ private func extractAccountManagerState(records: AccountRecordsView<TelegramAcco
         let _ = (context.sharedContext.accountManager.transaction { transaction in
             let settings = transaction.getSharedData(ApplicationSpecificSharedDataKeys.intentsSettings)?.get(IntentsSettings.self) ?? IntentsSettings.defaultSettings
             if !settings.initiallyReset || settings.account == nil {
-                if #available(iOS 10.0, *) {
+                if #available(iOS 10.0, *), !AyuSettings.shared.siriUnavailable {
                     Queue.mainQueue().async {
                         INInteraction.deleteAll()
                     }

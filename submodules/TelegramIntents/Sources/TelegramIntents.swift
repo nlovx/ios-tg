@@ -55,6 +55,9 @@ public enum SendMessageIntentSubject: CaseIterable {
 }
 
 public func donateSendMessageIntent(account: Account, sharedContext: SharedAccountContext, intentContext: SendMessageIntentContext, peerIds: [EnginePeer.Id]) {
+    if AyuSettings.shared.siriUnavailable {
+        return
+    }
     if #available(iOSApplicationExtension 13.2, iOS 13.2, *) {
         let _ = (sharedContext.accountManager.transaction { transaction -> Bool in
             if case .none = transaction.getAccessChallengeData() {
@@ -214,12 +217,18 @@ public func donateSendMessageIntent(account: Account, sharedContext: SharedAccou
 }
 
 public func deleteSendMessageIntents(peerId: EnginePeer.Id) {
+    if AyuSettings.shared.siriUnavailable {
+        return
+    }
     if #available(iOS 10.0, *) {
         INInteraction.delete(with: "sendMessage_\(peerId.toInt64())")
     }
 }
 
 public func deleteAllSendMessageIntents() {
+    if AyuSettings.shared.siriUnavailable {
+        return
+    }
     if #available(iOS 10.0, *) {
         INInteraction.deleteAll()
     }
