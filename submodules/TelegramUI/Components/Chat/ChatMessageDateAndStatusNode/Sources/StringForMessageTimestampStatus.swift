@@ -258,5 +258,11 @@ public func stringForMessageTimestampStatus(
         }
     }
     
+    if message.isAyuDeleted {
+        dateText = "\u{1F5D1}\u{FE0F} \(dateText)"
+    } else if message.isAyuKeptMedia {
+        dateText = "\u{1F525} \(dateText)"
+    }
+    
     return dateText
 }

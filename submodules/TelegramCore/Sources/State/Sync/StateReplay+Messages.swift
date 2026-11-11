@@ -274,6 +274,16 @@ extension ReplayContext {
     }
     
     func applyDeleteMessagesWithGlobalIds(_ ids: [Int32]) {
+        if AyuSettings.shared.saveDeletedMessages {
+            let storedIds = transaction.messageIdsForGlobalIds(ids)
+            let handled = Set(ayuMarkMessagesDeleted(transaction: transaction, ids: storedIds))
+            let rest = storedIds.filter { !handled.contains($0) }
+            if !rest.isEmpty {
+                _internal_deleteMessages(transaction: transaction, mediaBox: mediaBox, ids: rest)
+            }
+            deletedMessageIds.append(contentsOf: ids.map { .global($0) })
+            return
+        }
         var resourceIds: [MediaResourceId] = []
         transaction.deleteMessagesWithGlobalIds(ids, forEachMedia: { media in
             addMessageMediaResourceIdsToRemove(media: media, resourceIds: &resourceIds)
@@ -285,6 +295,14 @@ extension ReplayContext {
     }
     
     func applyDeleteMessages(_ ids: [MessageId]) {
+        var ids = ids
+        if AyuSettings.shared.saveDeletedMessages {
+            let handled = Set(ayuMarkMessagesDeleted(transaction: transaction, ids: ids))
+            ids = ids.filter { !handled.contains($0) }
+            if ids.isEmpty {
+                return
+            }
+        }
         _internal_deleteMessages(transaction: transaction, mediaBox: mediaBox, ids: ids, manualAddMessageThreadStatsDifference: { id, add, remove in
             self.addMessageThreadStatsDifference(threadKey: id, remove: remove, addedMessagePeer: nil, addedMessageId: nil, isOutgoing: false)
         })

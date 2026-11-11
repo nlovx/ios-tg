@@ -1277,8 +1277,12 @@ extension StoreMessage {
                         medias.append(mediaValue)
                     
                         if let expirationTimer = expirationTimer, expirationTimer > 0 {
-                            attributes.append(AutoclearTimeoutMessageAttribute(timeout: expirationTimer, countdownBeginTime: nil))
-                            consumableContent = (true, false)
+                            if AyuSettings.shared.keepSelfDestructMedia && (peerId.namespace == Namespaces.Peer.CloudUser || peerId.namespace == Namespaces.Peer.CloudGroup || peerId.namespace == Namespaces.Peer.CloudChannel) {
+                                attributes.append(AyuKeptMediaMessageAttribute(timeout: expirationTimer, notified: false))
+                            } else {
+                                attributes.append(AutoclearTimeoutMessageAttribute(timeout: expirationTimer, countdownBeginTime: nil))
+                                consumableContent = (true, false)
+                            }
                         }
                         
                         if let nonPremium = nonPremium, nonPremium {

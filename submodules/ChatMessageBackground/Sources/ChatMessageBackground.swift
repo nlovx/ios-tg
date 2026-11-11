@@ -84,6 +84,12 @@ public class ChatMessageBackground: ASDisplayNode {
     
     public var backgroundFrame: CGRect = .zero
     
+    public var ayuDimmed: Bool = false {
+        didSet {
+            self.imageView?.alpha = self.ayuDimmed ? 0.72 : 1.0
+        }
+    }
+    
     public var hasImage: Bool {
         self.imageViewImage != nil
     }
@@ -108,6 +114,7 @@ public class ChatMessageBackground: ASDisplayNode {
         
         imageView.image = self.imageViewImage
         imageView.tintColor = self.customHighlightColor
+        imageView.alpha = self.ayuDimmed ? 0.72 : 1.0
         
         if let imageFrame = self.imageFrame {
             imageView.frame = imageFrame
