@@ -26,6 +26,14 @@ jobs:
           cp -R "$GITHUB_WORKSPACE" /Users/Shared/
           mv /Users/Shared/$(basename "$GITHUB_WORKSPACE") /Users/Shared/telegram-ios
 
+      - name: Restore build cache
+        uses: actions/cache/restore@v4
+        with:
+          path: /Users/Shared/bazel-disk-cache
+          key: bazel-v1-${{ github.run_id }}
+          restore-keys: |
+            bazel-v1-
+
       - name: Build the app
         env:
           TG_API_ID: ${{ secrets.TG_API_ID }}
@@ -62,6 +70,13 @@ jobs:
             cp "$f" build/artifacts/
           done
           ls -la build/artifacts
+
+      - name: Save build cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: /Users/Shared/bazel-disk-cache
+          key: bazel-v1-${{ github.run_id }}
 
       # the repo is public and the ipa contains the api_hash, so the artifact is password-protected
       - name: Encrypt IPA
