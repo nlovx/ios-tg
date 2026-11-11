@@ -49,10 +49,12 @@ jobs:
 
           # same config as the official one, but with our own api_id / api_hash
           python3 - <<'PY'
-          import json, os
+          import json, os, re
           c = json.load(open("build-system/appstore-configuration.json"))
-          c["api_id"] = os.environ["TG_API_ID"].strip()
-          c["api_hash"] = os.environ["TG_API_HASH"].strip()
+          api_hash = os.environ["TG_API_HASH"].strip()
+          assert re.fullmatch(r"[0-9a-f]{32}", api_hash), "bad api_hash, length %d" % len(api_hash)
+          c["api_id"] = "36059564"
+          c["api_hash"] = api_hash
           json.dump(c, open("build-system/my-configuration.json", "w"), indent=1)
           PY
 
